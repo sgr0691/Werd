@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "werd"
+version = "0.1.0"
+description = "WebAssembly plugin runtime for Python"
+requires-python = ">=3.11"
+authors = [
+    {name = "Sergio", email = "sergio@example.com"}
+]
+dependencies = [
+    "wasmtime>=42,<43",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+
+[project.scripts]
+werd = "werd.cli:main"

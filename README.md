@@ -6,6 +6,25 @@ Werd is an open-source Python-first runtime for loading and executing WebAssembl
 
 It gives Python applications a safer extension model than raw Python plugins by making Python the **control plane** and WebAssembly the **execution layer**.
 
+Current status: module loading and inspection work in-process. Function execution is attempted in an isolated child process so `wasmtime` crashes or hangs fail closed instead of returning fabricated results.
+
+Recommended local environment: Python 3.11 or newer. On this repository, `wasmtime 42.0.0` failed under Apple-provided Python 3.9.6 on macOS 15.7.3 but succeeded under Homebrew Python 3.11.14 on the same machine. This points to a local Python runtime issue, not a macOS 15.7.3 issue.
+
+## Local Setup
+
+```bash
+./scripts/bootstrap_py311.sh
+.venv-py311/bin/python -m pytest -q
+.venv-py311/bin/python -m werd.cli run fixtures/echo.wasm --function run --input '{"value": 42}'
+```
+
+Verified result on this machine:
+
+```text
+18 passed in 0.57s
+{"value": 42}
+```
+
 ---
 
 ## Why Werd?
@@ -112,6 +131,12 @@ Example:
 werd run plugin.wasm --function run --input '{"name":"Sergio"}'
 ```
 
+Recommended local check:
+
+```bash
+.venv-py311/bin/python scripts/diagnose_wasmtime.py
+```
+
 What it should do:
 
 - load a `.wasm` file
@@ -120,6 +145,12 @@ What it should do:
 - return structured output
 - surface runtime errors clearly
 - optionally enforce time and memory limits
+
+Current limitation:
+
+- execution may fail on some local `macOS` / Python / `wasmtime` combinations
+- when that happens, `werd run` returns a controlled runtime error from the isolated executor
+- Werd does not simulate guest output anymore
 
 Expected future flags:
 
